@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ResourceDirectories : MonoBehaviour {
+public class ResourceDirectories {
 
     //folders
     private static string LiquidPhysicsRoot = "LiquidPhysics/";

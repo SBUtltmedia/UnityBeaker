@@ -52,7 +52,7 @@ public class DynamicParticle : MonoBehaviour
                     gameObject.layer = LayerMask.NameToLayer("Gas");// To have a different collision layer than the other particles (so gas doesnt rises up the lava but still collides with the wolrd)
                     break;
                 case STATES.LAVA:
-                    GetComponent<Rigidbody2D>().gravityScale = 0.3f; // To simulate the lava density
+                    GetComponent<Rigidbody2D>().gravityScale = 1.0f; // To simulate the lava density
                     break;
                 case STATES.NONE:
                     Destroy(gameObject);
@@ -75,12 +75,6 @@ public class DynamicParticle : MonoBehaviour
         {
             case STATES.WATER: //Water and lava got the same behaviour
                 MovementAnimation();
-                //Adds a random force left or right to flatten the water level
-                if(jostleTimer > 0.0f)
-                {
-                    rb.AddForce(new Vector2(Mathf.Lerp(-10.0f, 10.0f, Random.Range(0.0f, 1.0f)), 0));
-                    jostleTimer -= Time.fixedDeltaTime;
-                }
                 break;
             case STATES.LAVA:
                 MovementAnimation();
@@ -103,6 +97,16 @@ public class DynamicParticle : MonoBehaviour
         movementScale.z += Mathf.Abs(GetComponent<Rigidbody2D>().velocity.y) / 30.0f;
         movementScale.y = 1.0f;
         currentImage.gameObject.transform.localScale = movementScale;
+        //Adds a random force left or right to flatten the water level
+        if (jostleTimer > 0.0f)
+        {
+            rb.AddForce(new Vector2(Mathf.Lerp(-8.0f, 8.0f, Random.Range(0.0f, 1.0f)), 0));
+            jostleTimer -= Time.fixedDeltaTime;
+        }
+        else
+        {
+            rb.AddForce(new Vector2(Mathf.Lerp(-2.0f, 2.0f, Random.Range(0.0f, 1.0f)), 0));
+        }
     }
 
     // Here we handle the collision events with another particles, in this example water+lava= water-> gas
@@ -138,6 +142,22 @@ public class DynamicParticle : MonoBehaviour
         if (flask)
         {
             flask.RemoveParticleFromList(this);
+            rb.gravityScale = 1.0f;
         }
+    }
+
+    public void SetGravityScale(float scale)
+    {
+        rb.gravityScale = scale;
+    }
+
+    public void SetAsleep()
+    {
+        rb.Sleep();
+    }
+
+    public void WakeUp()
+    {
+        rb.WakeUp();
     }
 }

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 public class FlaskController : MonoBehaviour {
 
-    public float translateSpeed;
+    public float translateSpeed, rotateSpeed;
 
-    public List<DynamicParticle> particles;
-    private bool up, down, left, right, rotateLeft, rotateRight;
+    private List<DynamicParticle> particles;
+    private Vector3 totalTranslate;
+    private bool up, down, left, right, rotateLeft, rotateRight, rotate, didRotate;
 
     void Start()
     {
         particles = new List<DynamicParticle>();
+        totalTranslate = Vector3.zero;
     }
 
 	void Update () {
@@ -21,58 +23,69 @@ public class FlaskController : MonoBehaviour {
 
         rotateLeft = Input.GetKey(KeyCode.A);
         rotateRight = Input.GetKey(KeyCode.D);
+        rotate = rotateLeft || rotateRight;
 	}
 
     void FixedUpdate()
     {
+        totalTranslate = Vector3.zero;
+
         if (up)
         {
-            transform.Translate(Vector3.up * translateSpeed * Time.deltaTime, Space.World);
-            foreach (DynamicParticle p in particles)
-            {
-                p.transform.Translate(Vector3.up * translateSpeed * Time.deltaTime, Space.World);
-                p.ResetJostleTimer();
-            }
+            totalTranslate += Vector3.up * translateSpeed * Time.fixedDeltaTime;
         }
 
         if (down)
         {
-            transform.Translate(Vector3.down * translateSpeed * Time.deltaTime, Space.World);
-            foreach (DynamicParticle p in particles)
-            {
-                p.transform.Translate(Vector3.up * translateSpeed * Time.deltaTime, Space.World);
-                p.ResetJostleTimer();
-            }
+            totalTranslate += Vector3.down * translateSpeed * Time.fixedDeltaTime;
         }
 
         if (left)
         {
-            transform.Translate(Vector3.left * translateSpeed * Time.deltaTime, Space.World);
-            foreach (DynamicParticle p in particles)
-            {
-                p.transform.Translate(Vector3.up * translateSpeed * Time.deltaTime, Space.World);
-                p.ResetJostleTimer();
-            }
+            totalTranslate += Vector3.left * translateSpeed * Time.fixedDeltaTime;
         }
 
         if (right)
         {
-            transform.Translate(Vector3.right * translateSpeed * Time.deltaTime, Space.World);
+            totalTranslate += Vector3.right * translateSpeed * Time.fixedDeltaTime;
+        }
+
+        if (rotate)
+        {
+            if (!didRotate && IsBetween(70.0f, 90.0f, Mathf.Abs(transform.rotation.z)))
+            {
+                foreach (DynamicParticle p in particles)
+                {
+                    p.SetGravityScale(0.3f);
+                }
+            }
+            
+            if (rotateLeft)
+            {
+                transform.Rotate(0.0f, 0.0f, rotateSpeed * Time.fixedDeltaTime);
+            }
+
+            if (rotateRight)
+            {
+                transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
+            }
+
+            didRotate = true;
+        }
+        else if(didRotate)
+        {
             foreach (DynamicParticle p in particles)
             {
-                p.transform.Translate(Vector3.up * translateSpeed * Time.deltaTime, Space.World);
-                p.ResetJostleTimer();
+                p.SetGravityScale(1.0f);
             }
+            didRotate = false;
         }
 
-        if (rotateLeft)
+        transform.Translate(totalTranslate, Space.World);
+        foreach (DynamicParticle p in particles)
         {
-            transform.Rotate(0.0f, 0.0f, 1.0f);
-        }
-
-        if (rotateRight)
-        {
-            transform.Rotate(0.0f, 0.0f, -1.0f);
+            p.transform.Translate(totalTranslate, Space.World);
+            p.ResetJostleTimer();
         }
     }
 
@@ -84,5 +97,10 @@ public class FlaskController : MonoBehaviour {
     public void RemoveParticleFromList(DynamicParticle particle)
     {
         particles.Remove(particle);
+    }
+
+    bool IsBetween(float lo, float hi, float x)
+    {
+        return (x >= lo && x <= hi);
     }
 }
