@@ -22,10 +22,13 @@ public class DynamicParticle : MonoBehaviour
     float GAS_FLOATABILITY = 7.0f; //How fast does the gas goes up?
 
     private Rigidbody2D rb;
+    private float jostleTime = 10.0f;
+    private float jostleTimer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        jostleTimer = jostleTime;
     }
 
     void Awake()
@@ -73,7 +76,11 @@ public class DynamicParticle : MonoBehaviour
             case STATES.WATER: //Water and lava got the same behaviour
                 MovementAnimation();
                 //Adds a random force left or right to flatten the water level
-                rb.AddForce(new Vector2(Mathf.Lerp(-10.0f, 10.0f, Random.Range(0.0f, 1.0f)), 0));
+                if(jostleTimer > 0.0f)
+                {
+                    rb.AddForce(new Vector2(Mathf.Lerp(-10.0f, 10.0f, Random.Range(0.0f, 1.0f)), 0));
+                    jostleTimer -= Time.fixedDeltaTime;
+                }
                 break;
             case STATES.LAVA:
                 MovementAnimation();
@@ -111,4 +118,26 @@ public class DynamicParticle : MonoBehaviour
 
     }
 
+    public void ResetJostleTimer()
+    {
+        jostleTimer = jostleTime;
+    }
+
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        FlaskController flask = collider.gameObject.GetComponent<FlaskController>();
+        if (flask)
+        {
+            flask.AddParticleToList(this);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D collider)
+    {
+        FlaskController flask = collider.gameObject.GetComponent<FlaskController>();
+        if (flask)
+        {
+            flask.RemoveParticleFromList(this);
+        }
+    }
 }
