@@ -56,7 +56,7 @@ public class FlaskController : MonoBehaviour {
             {
                 foreach (DynamicParticle p in particles)
                 {
-                    p.SetGravityScale(0.3f);
+                    p.SetGravityScale(0.5f);
                 }
             }
             
