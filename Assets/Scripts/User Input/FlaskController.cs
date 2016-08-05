@@ -50,16 +50,41 @@ public class FlaskController : MonoBehaviour {
             totalTranslate += Vector3.right * translateSpeed * Time.fixedDeltaTime;
         }
 
-        if (rotate)
+        if (false)
         {
-            if (!didRotate && IsBetween(70.0f, 90.0f, Mathf.Abs(transform.rotation.z)))
+            if (rotate)
+            {
+                if (!didRotate && IsBetween(70.0f, 90.0f, Mathf.Abs(transform.rotation.z)))
+                {
+                    foreach (DynamicParticle p in particles)
+                    {
+                        p.SetGravityScale(0.5f);
+                    }
+                }
+
+                if (rotateLeft)
+                {
+                    transform.Rotate(0.0f, 0.0f, rotateSpeed * Time.fixedDeltaTime);
+                }
+
+                if (rotateRight)
+                {
+                    transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
+                }
+
+                didRotate = true;
+            }
+            else if (didRotate)
             {
                 foreach (DynamicParticle p in particles)
                 {
-                    p.SetGravityScale(0.5f);
+                    p.SetGravityScale(1.0f);
                 }
+                didRotate = false;
             }
-            
+        }
+        else
+        {
             if (rotateLeft)
             {
                 transform.Rotate(0.0f, 0.0f, rotateSpeed * Time.fixedDeltaTime);
@@ -70,23 +95,14 @@ public class FlaskController : MonoBehaviour {
                 transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
             }
 
-            didRotate = true;
-        }
-        else if(didRotate)
-        {
             foreach (DynamicParticle p in particles)
             {
-                p.SetGravityScale(1.0f);
+                p.transform.Translate(totalTranslate, Space.World);
+                p.ResetJostleTimer();
             }
-            didRotate = false;
         }
 
         transform.Translate(totalTranslate, Space.World);
-        foreach (DynamicParticle p in particles)
-        {
-            p.transform.Translate(totalTranslate, Space.World);
-            p.ResetJostleTimer();
-        }
     }
 
     public void AddParticleToList(DynamicParticle particle)
