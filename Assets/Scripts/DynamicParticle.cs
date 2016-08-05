@@ -21,6 +21,13 @@ public class DynamicParticle : MonoBehaviour
     public GameObject[] particleImages; //We need multiple particle images to reduce drawcalls
     float GAS_FLOATABILITY = 7.0f; //How fast does the gas goes up?
 
+    private Rigidbody2D rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     void Awake()
     {
         if (currentState == STATES.NONE)
@@ -58,25 +65,29 @@ public class DynamicParticle : MonoBehaviour
             }
         }
     }
-    void Update()
+
+    void FixedUpdate()
     {
         switch (currentState)
         {
             case STATES.WATER: //Water and lava got the same behaviour
                 MovementAnimation();
+                //Adds a random force left or right to flatten the water level
+                rb.AddForce(new Vector2(Mathf.Lerp(-10.0f, 10.0f, Random.Range(0.0f, 1.0f)), 0));
                 break;
             case STATES.LAVA:
                 MovementAnimation();
                 break;
             case STATES.GAS:
-                if (GetComponent<Rigidbody2D>().velocity.y < 50)
+                if (rb.velocity.y < 50)
                 { //Limits the speed in Y to avoid reaching mach 7 in speed
-                    GetComponent<Rigidbody2D>().AddForce(new Vector2(0, GAS_FLOATABILITY)); // Gas always goes upwards
+                    rb.AddForce(new Vector2(0, GAS_FLOATABILITY)); // Gas always goes upwards
                 }
                 break;
 
         }
     }
+
     // This scales the particle image acording to its velocity, so it looks like its deformable... but its not ;)
     void MovementAnimation()
     {
