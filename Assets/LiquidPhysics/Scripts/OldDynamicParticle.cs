@@ -11,7 +11,7 @@ using System.Collections;
 /// Contact: q_layer@hotmail.com
 /// </summary>
 
-public class DynamicParticle : MonoBehaviour {	
+public class OldDynamicParticle : MonoBehaviour {	
 	public enum STATES{WATER,GAS,LAVA,NONE}; //The 3 states of the particle
 	STATES currentState=STATES.NONE; //Defines the currentstate of the particle, default is water
 	public GameObject currentImage; //The image is for the metaball shader for the effect, it is onle seen by the liquids camera.
@@ -100,7 +100,7 @@ public class DynamicParticle : MonoBehaviour {
 	// Here we handle the collision events with another particles, in this example water+lava= water-> gas
 	void OnCollisionEnter2D(Collision2D other){
 		if(currentState==STATES.WATER && other.gameObject.tag=="DynamicParticle"){ 
-			if(other.collider.GetComponent<DynamicParticle>().currentState==STATES.LAVA){
+			if(other.collider.GetComponent<OldDynamicParticle>().currentState==STATES.LAVA){
 				SetState(STATES.GAS);
 			}
 		}
