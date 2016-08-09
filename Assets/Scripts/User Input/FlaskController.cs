@@ -7,12 +7,19 @@ public class FlaskController : MonoBehaviour {
 
     private List<DynamicParticle> particles;
     private Vector3 totalTranslate;
+    private float minX, maxX, minY, maxY;
     private bool up, down, left, right, rotateLeft, rotateRight, rotate, didRotate;
 
     void Start()
     {
         particles = new List<DynamicParticle>();
         totalTranslate = Vector3.zero;
+
+        //min and max movement bounds
+        minX = -5.0f;
+        maxX = 0.45f;
+        minY = 0.95f;
+        maxY = 2.0f;
     }
 
 	void Update () {
@@ -50,56 +57,44 @@ public class FlaskController : MonoBehaviour {
             totalTranslate += Vector3.right * translateSpeed * Time.fixedDeltaTime;
         }
 
-        if (false)
+        if (rotateLeft)
         {
-            if (rotate)
+            transform.Rotate(0.0f, 0.0f, rotateSpeed * Time.fixedDeltaTime);
+        }
+
+        if (rotateRight)
+        {
+            transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
+        }
+
+        if(!IsBetween(minX, maxX, transform.position.x + totalTranslate.x))
+        {
+            if(totalTranslate.x > 0.0f)
             {
-                if (!didRotate && IsBetween(70.0f, 90.0f, Mathf.Abs(transform.rotation.z)))
-                {
-                    foreach (DynamicParticle p in particles)
-                    {
-                        p.SetGravityScale(0.5f);
-                    }
-                }
-
-                if (rotateLeft)
-                {
-                    transform.Rotate(0.0f, 0.0f, rotateSpeed * Time.fixedDeltaTime);
-                }
-
-                if (rotateRight)
-                {
-                    transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
-                }
-
-                didRotate = true;
+                totalTranslate.x = maxX - transform.position.x;
             }
-            else if (didRotate)
+            else
             {
-                foreach (DynamicParticle p in particles)
-                {
-                    p.SetGravityScale(1.0f);
-                }
-                didRotate = false;
+                totalTranslate.x = minX - transform.position.x;
             }
         }
-        else
+
+        if (!IsBetween(minY, maxY, transform.position.y + totalTranslate.y))
         {
-            if (rotateLeft)
+            if (totalTranslate.y > 0.0f)
             {
-                transform.Rotate(0.0f, 0.0f, rotateSpeed * Time.fixedDeltaTime);
+                totalTranslate.y = maxY - transform.position.y;
             }
+            else
+            {
+                totalTranslate.y = minY - transform.position.y;
+            }
+        }
 
-            if (rotateRight)
-            {
-                transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
-            }
-
-            foreach (DynamicParticle p in particles)
-            {
-                p.transform.Translate(totalTranslate, Space.World);
-                p.ResetJostleTimer();
-            }
+        foreach (DynamicParticle p in particles)
+        {
+            p.transform.Translate(totalTranslate, Space.World);
+            p.ResetJostleTimer();
         }
 
         transform.Translate(totalTranslate, Space.World);
