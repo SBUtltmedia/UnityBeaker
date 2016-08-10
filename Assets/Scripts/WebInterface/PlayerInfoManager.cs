@@ -18,7 +18,7 @@ public class PlayerInfoManager : MonoBehaviour {
 
         if (playerInfo != null && saveTimer <= 0.0f)
         {
-            playerInfo.setNumOfDroppedParticles(ParticleDestroyer.counter);
+            playerInfo.numOfDroppedParticles = (ParticleDestroyer.counter);
             StartCoroutine(SavePlayerInfoToServer(playerInfo));
             saveTimer = saveDelay;
         }
