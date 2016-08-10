@@ -3,15 +3,13 @@
 [System.Serializable]
 public class PlayerInfo
 {
-    public string name;
-    public int lives;
-    public float health;
+    public string netID;
+    public int numOfDroppedParticles;
 
-    public PlayerInfo()
+    public PlayerInfo(string netID)
     {
-        name = "Coconut Gun";
-        lives = 3;
-        health = 10;
+        this.netID = netID;
+        numOfDroppedParticles = 0;
     }
 
     public static PlayerInfo CreateFromJSON(string jsonString)
@@ -19,13 +17,8 @@ public class PlayerInfo
         return JsonUtility.FromJson<PlayerInfo>(jsonString);
     }
 
-    public string SaveToString()
+    public string SaveToJSON()
     {
         return JsonUtility.ToJson(this);
     }
-
-    // Given JSON input:
-    // {"name":"Dr Charles","lives":3,"health":0.8}
-    // this example will return a PlayerInfo object with
-    // name == "Dr Charles", lives == 3, and health == 0.8f
 }
