@@ -36,7 +36,7 @@ public class PlayerInfoManager : MonoBehaviour {
         else
         {
             playerInfo = PlayerInfo.CreateFromJSON(www.text);
-            ParticleDestroyer.LoadCounter(playerInfo.getNumOfDroppedParticles());
+            ParticleDestroyer.LoadCounter(playerInfo.numOfDroppedParticles);
             print("Sucessfully loaded Player Info from JSON");
         }
     }
