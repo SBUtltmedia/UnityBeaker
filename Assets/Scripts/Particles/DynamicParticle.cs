@@ -22,13 +22,12 @@ public class DynamicParticle : MonoBehaviour
     float GAS_FLOATABILITY = 7.0f; //How fast does the gas goes up?
 
     private Rigidbody2D rb;
-    private float jostleTime = 10.0f;
+    private float jostleTime = 0.0f;
     private float jostleTimer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        jostleTimer = jostleTime;
     }
 
     void Awake()
@@ -129,26 +128,23 @@ public class DynamicParticle : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        FlaskController flask = collider.gameObject.GetComponent<FlaskController>();
-        if (flask)
+        if (collider.gameObject.CompareTag("Flask"))
         {
-            flask.AddParticleToList(this);
+            collider.gameObject.GetComponent<FlaskController>().AddParticleToList(this);
+        }
+
+        if (collider.gameObject.CompareTag("Beaker"))
+        {
+            ResetJostleTimer();
         }
     }
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        FlaskController flask = collider.gameObject.GetComponent<FlaskController>();
-        if (flask)
+        if (collider.gameObject.CompareTag("Flask"))
         {
-            flask.RemoveParticleFromList(this);
-            rb.gravityScale = 1.0f;
+            collider.gameObject.GetComponent<FlaskController>().RemoveParticleFromList(this);
         }
-    }
-
-    public void SetGravityScale(float scale)
-    {
-        rb.gravityScale = scale;
     }
 
     public void SetAsleep()

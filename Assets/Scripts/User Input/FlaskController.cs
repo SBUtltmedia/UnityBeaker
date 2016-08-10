@@ -4,22 +4,19 @@ using System.Collections.Generic;
 public class FlaskController : MonoBehaviour {
 
     public float translateSpeed, rotateSpeed;
+    public float minX = -5.0f;
+    public float maxX = 0.45f;
+    public float minY = 0.95f;
+    public float maxY = 2.0f;
 
     private List<DynamicParticle> particles;
     private Vector3 totalTranslate;
-    private float minX, maxX, minY, maxY;
     private bool up, down, left, right, rotateLeft, rotateRight, rotate, didRotate;
 
     void Start()
     {
         particles = new List<DynamicParticle>();
         totalTranslate = Vector3.zero;
-
-        //min and max movement bounds
-        minX = -5.0f;
-        maxX = 0.45f;
-        minY = 0.95f;
-        maxY = 2.0f;
     }
 
 	void Update () {
