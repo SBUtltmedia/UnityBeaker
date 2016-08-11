@@ -9,9 +9,9 @@ public class FlaskController : MonoBehaviour {
     public float minY = 0.95f;
     public float maxY = 2.0f;
 
-    private List<DynamicParticle> particles;
+    public static List<DynamicParticle> particles;
     private Vector3 totalTranslate;
-    private bool up, down, left, right, rotateLeft, rotateRight, rotate, didRotate;
+    private bool up, down, left, right, rotateLeft, rotateRight, didRotate;
 
     void Start()
     {
@@ -27,7 +27,6 @@ public class FlaskController : MonoBehaviour {
 
         rotateLeft = Input.GetKey(KeyCode.A);
         rotateRight = Input.GetKey(KeyCode.D);
-        rotate = rotateLeft || rotateRight;
 	}
 
     void FixedUpdate()
@@ -64,6 +63,7 @@ public class FlaskController : MonoBehaviour {
             transform.Rotate(0.0f, 0.0f, rotateSpeed * -Time.fixedDeltaTime);
         }
 
+        //Catching out of bounds translations and stopping them
         if(!IsBetween(minX, maxX, transform.position.x + totalTranslate.x))
         {
             if(totalTranslate.x > 0.0f)
@@ -88,6 +88,7 @@ public class FlaskController : MonoBehaviour {
             }
         }
 
+        //move all the particles inside the beaker still
         foreach (DynamicParticle p in particles)
         {
             try

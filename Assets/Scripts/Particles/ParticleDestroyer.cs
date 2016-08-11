@@ -5,8 +5,8 @@ public class ParticleDestroyer : MonoBehaviour {
 
     public static int counter = 0;
 
-    private static bool counterChanged;
     private UIManager ui;
+    private static bool counterChanged;
 
     void Start()
     {
@@ -26,6 +26,7 @@ public class ParticleDestroyer : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("DynamicParticle"))
         {
+            FlaskController.particles.Remove(other.gameObject.GetComponent<DynamicParticle>());
             Destroy(other.gameObject);
             ui.UpdateDroppedParticleDisplay(++counter);
         }
