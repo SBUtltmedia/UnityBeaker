@@ -90,8 +90,15 @@ public class FlaskController : MonoBehaviour {
 
         foreach (DynamicParticle p in particles)
         {
-            p.transform.Translate(totalTranslate, Space.World);
-            p.ResetJostleTimer();
+            try
+            {
+                p.transform.Translate(totalTranslate, Space.World);
+                p.ResetJostleTimer();
+            }
+            catch
+            {
+                particles.Remove(p);
+            }
         }
 
         transform.Translate(totalTranslate, Space.World);

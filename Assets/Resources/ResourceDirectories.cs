@@ -15,6 +15,7 @@ public class ResourceDirectories {
     //Prefabs
     public static string ParticleSpawner = ParticleRoot + "ParticleSpawner";
     public static string DynamicParticle = ParticleRoot + "DynamicParticle";
+    public static string DynamicParticle2 = ParticleRoot + "DynamicParticle2";
     public static string Flask = WorldObjectsRoot + "Flask";
     public static string Beaker = WorldObjectsRoot + "Beaker";
 }

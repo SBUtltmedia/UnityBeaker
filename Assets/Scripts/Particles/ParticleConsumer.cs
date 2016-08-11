@@ -3,33 +3,24 @@ using System.Collections.Generic;
 
 public class ParticleConsumer : MonoBehaviour {
 
-    private List<GameObject> particles;
+    //public List<GameObject> particles;
     private PolyGrow polygon;
 
     void Start()
     {
         polygon = FindObjectOfType<PolyGrow>();
-        particles = new List<GameObject>();
+        //particles = new List<GameObject>();
     }
 
-    void Update()
+    void OnTriggerStay2D(Collider2D other)
     {
-        if(particles.Count > 10)
-        {
-            particles.RemoveAt(0);
-            polygon.ConsumeParticle();
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        print(gameObject);
         if (other.gameObject.CompareTag("DynamicParticle"))
         {
-            print(gameObject);
             if (other.gameObject.name != "WaterLevel")
             {
-                particles.Add(other.gameObject);
+                Destroy(other.gameObject);
+                polygon.ConsumeParticle();
+                transform.position = new Vector3(transform.position.x, transform.position.y + (polygon.GetTargetMaxY() / 250.0f), transform.position.z);
             }
         }
     }
