@@ -22,7 +22,7 @@ public class DynamicParticle : MonoBehaviour
     float GAS_FLOATABILITY = 7.0f; //How fast does the gas goes up?
 
     private Rigidbody2D rb;
-    private float jostleTime = 0.0f;
+    private float jostleTime = 1.0f;
     private float jostleTimer;
 
     void Start()
@@ -84,7 +84,6 @@ public class DynamicParticle : MonoBehaviour
                     rb.AddForce(new Vector2(0, GAS_FLOATABILITY)); // Gas always goes upwards
                 }
                 break;
-
         }
     }
 

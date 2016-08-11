@@ -94,7 +94,10 @@ public class FlaskController : MonoBehaviour {
             try
             {
                 p.transform.Translate(totalTranslate, Space.World);
-                p.ResetJostleTimer();
+                if(totalTranslate != Vector3.zero || (rotateRight || rotateLeft))
+                {
+                    p.ResetJostleTimer();
+                }
             }
             catch
             {
