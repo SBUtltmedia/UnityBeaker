@@ -15,6 +15,7 @@ using System.Collections;
 
 public class ParticleGenerator : MonoBehaviour
 {
+    public GameObject flask;
     public Vector3 particleForce; //Is there a initial force particles should have?
     public DynamicParticle.STATES particlesState = DynamicParticle.STATES.WATER; // The state of the particles spawned
     public Transform particlesParent; // Where will the spawned particles will be parented (To avoid covering the whole inspector with them)
@@ -33,10 +34,27 @@ public class ParticleGenerator : MonoBehaviour
             if (!particlesParent)
                 particlesParent = transform;
         }
+
+        if (!flask)
+        {
+            flask = FindObjectOfType<FlaskController>().gameObject;
+        }
     }
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.S))
+        {
+            GameObject newLiquidParticle = (GameObject)Instantiate(Resources.Load(ResourceDirectories.DynamicParticle)); //Spawn a particle
+            newLiquidParticle.GetComponent<Rigidbody2D>().AddForce(particleForce); //Add our custom force
+            DynamicParticle particleScript = newLiquidParticle.GetComponent<DynamicParticle>(); // Get the particle script
+            particleScript.SetState(particlesState); //Set the particle State
+            newLiquidParticle.transform.position = transform.position;// Relocate to the spawner position
+            newLiquidParticle.transform.parent = particlesParent;// Add the particle to the parent container		
+        }
+
+        //Old method by setting number of particles
+        /*
         if (lastSpawnTime + SPAWN_INTERVAL < Time.time && numberOfParticles > 0)
         { // Is it time already for spawning a new particle?
             GameObject newLiquidParticle = (GameObject)Instantiate(Resources.Load(ResourceDirectories.DynamicParticle)); //Spawn a particle
@@ -52,5 +70,6 @@ public class ParticleGenerator : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+        */
     }
 }
