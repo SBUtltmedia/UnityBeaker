@@ -33,7 +33,7 @@ public class DynamicParticle : MonoBehaviour
     void Awake()
     {
         if (currentState == STATES.NONE)
-            SetState(STATES.LAVA);
+            SetState(STATES.WATER);
     }
 
     //The definitios to each state
