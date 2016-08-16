@@ -4,18 +4,23 @@ using System.Collections.Generic;
 public class FlaskController : MonoBehaviour {
 
     public float translateSpeed, rotateSpeed;
+    public float compressDelay;
     public float minX = -5.0f;
     public float maxX = 0.45f;
     public float minY = 0.95f;
     public float maxY = 2.0f;
 
-    public static List<DynamicParticle> particles;
+    private static List<DynamicParticle> particles;
+    private Compressor compressor;
     private Vector3 totalTranslate;
-    private bool up, down, left, right, rotateLeft, rotateRight, didRotate;
+    private float compressTimer;
+    private bool up, down, left, right, rotateLeft, rotateRight, wasInput;
 
     void Start()
     {
         particles = new List<DynamicParticle>();
+        compressor = FindObjectOfType<Compressor>();
+        compressTimer = compressDelay;
         totalTranslate = Vector3.zero;
     }
 
@@ -27,7 +32,13 @@ public class FlaskController : MonoBehaviour {
 
         rotateLeft = Input.GetKey(KeyCode.A);
         rotateRight = Input.GetKey(KeyCode.D);
-	}
+        wasInput = up || down || left || right || rotateLeft || rotateRight;
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            compressTimer = compressDelay;
+        }
+    }
 
     void FixedUpdate()
     {
@@ -88,24 +99,51 @@ public class FlaskController : MonoBehaviour {
             }
         }
 
-        //move all the particles inside the beaker still
-        foreach (DynamicParticle p in particles)
+        if (wasInput)
         {
-            try
+            compressor.Disable();
+            compressTimer = compressDelay;
+            //move all the particles inside the beaker still
+            foreach (DynamicParticle p in particles)
             {
-                p.transform.Translate(totalTranslate, Space.World);
-                if(totalTranslate != Vector3.zero || (rotateRight || rotateLeft))
+                try
                 {
-                    p.ResetJostleTimer();
+                    p.transform.Translate(totalTranslate, Space.World);
+                    if (totalTranslate != Vector3.zero || (rotateRight || rotateLeft))
+                    {
+                        p.ResetJostleTimer();
+                    }
+                }
+                catch
+                {
+                    particles.Remove(p);
                 }
             }
-            catch
-            {
-                particles.Remove(p);
-            }
-        }
 
-        transform.Translate(totalTranslate, Space.World);
+            transform.Translate(totalTranslate, Space.World);
+        }
+        else
+        {
+            if (!compressor.IsEnabled() && compressTimer < 0.0f && !Input.GetKey(KeyCode.S))
+            {
+                //spawn compressor at water level
+                Vector3 position = transform.position;
+                position.y -= 500.0f;
+                foreach (DynamicParticle p in particles)
+                {
+                    if(position.y < p.transform.position.y)
+                    {
+                        position.y = p.transform.position.y;
+                    }
+                }
+                position.y += 0.45f;
+                compressor.Enable(position);
+            }
+            else
+            {
+                compressTimer -= Time.deltaTime;
+            }   
+        }
     }
 
     public void AddParticleToList(DynamicParticle particle)
@@ -113,7 +151,7 @@ public class FlaskController : MonoBehaviour {
         particles.Add(particle);
     }
 
-    public void RemoveParticleFromList(DynamicParticle particle)
+    public static void RemoveParticleFromList(DynamicParticle particle)
     {
         particles.Remove(particle);
     }

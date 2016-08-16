@@ -20,11 +20,12 @@ public class ParticleGenerator : MonoBehaviour
     public DynamicParticle.STATES particlesState = DynamicParticle.STATES.WATER; // The state of the particles spawned
     public Transform particlesParent; // Where will the spawned particles will be parented (To avoid covering the whole inspector with them)
     public int numberOfParticles; //Number of particles to spawn before dying
-
     public float SPAWN_INTERVAL = 0.025f; // How much time until the next particle spawns
-    private float lastSpawnTime = float.MinValue; //The last spawn time
+
+    private Compressor compressor;
 
     void Start() {
+        compressor = FindObjectOfType<Compressor>();
         //Tries to catch if the particlesParent transform is never set in the editor
         if (!particlesParent)
         {
@@ -45,6 +46,7 @@ public class ParticleGenerator : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.S))
         {
+            compressor.Disable();
             GameObject newLiquidParticle = (GameObject)Instantiate(Resources.Load(ResourceDirectories.DynamicParticle)); //Spawn a particle
             newLiquidParticle.GetComponent<Rigidbody2D>().AddForce(particleForce); //Add our custom force
             DynamicParticle particleScript = newLiquidParticle.GetComponent<DynamicParticle>(); // Get the particle script

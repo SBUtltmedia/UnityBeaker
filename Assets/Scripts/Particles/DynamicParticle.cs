@@ -98,12 +98,12 @@ public class DynamicParticle : MonoBehaviour
         //Adds a random force left or right to flatten the water level
         if (jostleTimer > 0.0f)
         {
-            rb.AddForce(new Vector2(Mathf.Lerp(-10.0f, 10.0f, Random.Range(0.0f, 1.0f)), 0));
+            rb.AddForce(new Vector2(Mathf.Lerp(-10.0f, 10.0f, Random.Range(0.0f, 1.0f)), 0.0f));
             jostleTimer -= Time.fixedDeltaTime;
         }
         else
         {
-            rb.AddForce(new Vector2(Mathf.Lerp(-2.0f, 2.0f, Random.Range(0.0f, 1.0f)), 0));
+            rb.AddForce(new Vector2(Mathf.Lerp(-2.0f, 2.0f, Random.Range(0.0f, 1.0f)), 0.0f));
         }
     }
 
@@ -142,17 +142,7 @@ public class DynamicParticle : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Flask"))
         {
-            collider.gameObject.GetComponent<FlaskController>().RemoveParticleFromList(this);
+            FlaskController.RemoveParticleFromList(this);
         }
-    }
-
-    public void SetAsleep()
-    {
-        rb.Sleep();
-    }
-
-    public void WakeUp()
-    {
-        rb.WakeUp();
     }
 }

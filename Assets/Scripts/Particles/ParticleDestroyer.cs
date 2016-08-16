@@ -26,7 +26,7 @@ public class ParticleDestroyer : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("DynamicParticle"))
         {
-            FlaskController.particles.Remove(other.gameObject.GetComponent<DynamicParticle>());
+            FlaskController.RemoveParticleFromList(other.gameObject.GetComponent<DynamicParticle>());
             Destroy(other.gameObject);
             ui.UpdateDroppedParticleDisplay(++counter);
         }
