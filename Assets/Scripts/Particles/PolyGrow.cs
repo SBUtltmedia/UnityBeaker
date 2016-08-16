@@ -26,4 +26,9 @@ public class PolyGrow : MonoBehaviour {
     {
         return targetMaxY;
     }
+
+    public int GetNumberOfParticles()
+    {
+        return count;
+    }
 }
