@@ -136,7 +136,7 @@ public class FlaskController : MonoBehaviour {
                         position.y = p.transform.position.y;
                     }
                 }
-                position.y += 0.45f;
+                position.y += 0.65f;
                 compressor.Enable(position);
             }
             else

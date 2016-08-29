@@ -14,14 +14,18 @@ public class ParticleConsumer : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("DynamicParticle"))
+        if (polygon.CanConsumeParticle())
         {
-            if (other.gameObject.name != "WaterLevel")
+            if (other.gameObject.CompareTag("DynamicParticle"))
             {
-                Destroy(other.gameObject);
-                polygon.ConsumeParticle();
-                transform.position = new Vector3(transform.position.x, transform.position.y + (polygon.GetTargetMaxY() / 250.0f), transform.position.z);
+                if (other.gameObject.name != "WaterLevel")
+                {
+                    FlaskController.RemoveParticleFromList(other.GetComponent<DynamicParticle>());
+                    Destroy(other.gameObject);
+                    polygon.ConsumeParticle();
+                    transform.position = new Vector3(transform.position.x, transform.position.y + (polygon.GetTargetMaxY() / 250.0f), transform.position.z);
+                }
             }
-        }
+        }        
     }
 }
